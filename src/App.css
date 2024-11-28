@@ -1,0 +1,52 @@
+:root {
+    font-family: monospace;
+    font-size: larger;
+}
+
+div.o-titleGrid {
+    text-align: center;
+    & p {
+        font-size: 1.5rem;
+        color: var(--tile-color);
+    }
+
+}
+
+div.o-gameGrid {
+    --tile-size: 10rem;
+
+    display: grid;
+    grid-template-columns: repeat(3, var(--tile-size));
+    grid-template-rows: repeat(3, var(--tile-size));
+
+    width: calc(3*var(--tile-size));
+    height: calc(3*var(--tile-size));
+    border-radius: 2rem;
+    border: 1px solid black;
+    overflow: hidden;
+    margin: auto;
+}
+
+button {
+    font-size: 4rem;
+    font-family: monospace;
+    color: var(--tile-color);
+    background-color: rgb(228, 228, 228);
+
+    &:disabled {
+        background-color: rgb(178, 178, 178);
+    }
+
+    &.u-highlight {
+        background: rgb(from var(--tile-color) r g b / 0.2);
+        font-weight: bold;
+    }
+}
+
+*[data-player='X'] {
+    --tile-color: red;
+}
+
+*[data-player='O'] {
+    --tile-color: blue;
+}
