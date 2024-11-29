@@ -5,7 +5,7 @@ type PlayerPos = {
     [key: string]: number | any
 };
 
-enum GameStatus { "On", "Win", "Tie" };
+export enum GameStatus { "On", "Win", "Tie" };
 
 // Will be divided into cases, from 0-7
 const WINNING_STATE: number[] = [
@@ -40,11 +40,7 @@ function App() {
     // GAME LOGIC'S STATE
     // 3-value state representing the game's status (Winner, Tied, On-going)
     const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.On);
-
-    // PLAYER'S STATES
-    // X starts, then O. swap at "makeMove"
-    const [currPlayer, setCurrPlayer] = useState<string>("X");
-    // Object representing player's points
+    // Object representing player's position in 9-bit binary
     const [playerPos, setPlayerPos] = useState<PlayerPos>({
         "X": 0b000_000_000,
         "O": 0b000_000_000,
@@ -52,6 +48,10 @@ function App() {
             return this.X | this.O
         },
     });
+
+    // PLAYER'S STATES
+    // X starts, then O. swap at "makeMove"
+    const [currPlayer, setCurrPlayer] = useState<'X' | 'O'>("X");
 
     // swap the player who takes next move
     function switchPlayer(): void {
@@ -78,28 +78,28 @@ function App() {
 
     function updateAndCheckGameState(index: number): GameStatus {
         // Generate string array representing gamestate based on players' positions.
-        const stateAsString = (playState: PlayerPos) : string[] => {
-            const xState: string = playState.X.toString(2).padStart(9,'0').replaceAll('1','X');
-            const oState: string = playState.O.toString(2).padStart(9,'0').replaceAll('1','O');
-            const outState: string[] | string = Array(9).fill('');
+        const posAsString = (playPos: PlayerPos) : string[] => {
+            const xPos: string = playPos.X.toString(2).padStart(9,'0').replaceAll('1','X');
+            const oPos: string = playPos.O.toString(2).padStart(9,'0').replaceAll('1','O');
+            const outPos: string[] | string = Array(9).fill('');
     
-            for(let i = 0; i < xState.length; i++) {
-                outState[i] = xState[i] != '0' ? xState[i] : oState[i] != '0' ? oState[i] : '';
+            for(let i = 0; i < xPos.length; i++) {
+                outPos[i] = xPos[i] != '0' ? xPos[i] : oPos[i] != '0' ? oPos[i] : '';
             }
     
-            return outState.reverse();
+            return outPos.reverse();
         }
 
         // Make changes to player's positions on the board
         playerPos[currPlayer] |= (0b000_000_000 | 2 ** index);
 
         // Make changes to & Update "gameState" state
-        setGameState(stateAsString(playerPos));
+        setGameState(posAsString(playerPos));
         
         // Update player's positions on the board
         setPlayerPos(
             {
-                [currPlayer]: (playerPos[currPlayer] | (0b000_000_000 | 2 ** index)),
+                [currPlayer]: playerPos[currPlayer],
                 ...playerPos
             }
         );
