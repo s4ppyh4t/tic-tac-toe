@@ -94,4 +94,4 @@ Here's an example, consider Player X's current positions.
 This mechanic will work in any turn, ensuring simplicity in operations *(instead of performing string or number comparision for columns, rows and diags every move.)*
 
 
-[^1]: Binary of **0b100_000_100** is mapped from right to left, each group of 3 digits representing top-row middle-row and bottom-row, from left to right on the board.<center>0 -> 0 -> 1</center><center>0 -> 0 -> 0</center><center>0 -> 0 -> 1</center>
+[^1]: Binary of **0b100_000_100** is mapped from right to left, each group of 3 digits representing top-row middle-row and bottom-row, from left to right on the board. `0 -> 0 -> 1 | 0 -> 0 -> 0 | 0 -> 0 -> 1`
