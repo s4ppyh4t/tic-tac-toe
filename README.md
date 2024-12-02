@@ -12,7 +12,7 @@ Submission by Tung Nguyen
 
 1. ~~I have mutated variable `playerPos`, which was in state. While I did acknowledge the problem of state mutation and sufficiently called `setPlayerPos` accordingly, it violated the snapshot rule, and React may have not reconcile properly, had I not passed in a different playerPos object (it may have not acknowledge a state change due to shallow comparison).~~
 
-<span style="color: green">**Fixed**. Ironically, this is the reason why my code runs into an error while attempting to implement the `Restart game` button. Just as React said, *unexpected behaviours* will come if I mutate the *supposedly-immutatable-stateful* variable `playerPos`.</span>
+<span style="color: green">**Fixed**. Ironically, this is the reason why my code runs into an error while attempting to implement the `Restart Game` button. Just as React said, *unexpected behaviours* will come if I mutate the *supposedly-immutatable-stateful* variable.</span>
 
 2. My code design fragments `set<State>` method with too much freedom (and probably too many of them), which means that just with one function not behaving properly and no error boundaries, the game will fall into an inconsistent state (while running still), since player and game states are separate.
 
