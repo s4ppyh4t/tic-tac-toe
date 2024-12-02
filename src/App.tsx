@@ -31,6 +31,15 @@ const WINNING_POS: number[][] = [
     [2, 4, 6],
 ]
 
+// Default Player's position values
+const DEFAULT_PLAYER_POS = {
+    "X": 0b000_000_000,
+    "O": 0b000_000_000,
+    "overall": function overall(this: PlayerPos) {
+        return this.X | this.O
+    },
+}
+
 function App() {
     // VISUAL STATE
     // Visual gamestate and winning positions, only used for visual rendering
@@ -41,13 +50,7 @@ function App() {
     // 3-value state representing the game's status (Winner, Tied, On-going)
     const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.On);
     // Object representing player's position in 9-bit binary
-    const [playerPos, setPlayerPos] = useState<PlayerPos>({
-        "X": 0b000_000_000,
-        "O": 0b000_000_000,
-        "overall": function overall(this: PlayerPos) {
-            return this.X | this.O
-        },
-    });
+    const [playerPos, setPlayerPos] = useState<PlayerPos>(DEFAULT_PLAYER_POS);
 
     // PLAYER'S STATES
     // X starts, then O. swap at "makeMove"
@@ -66,7 +69,6 @@ function App() {
                 return GameStatus.Win;
             }
         }
-
         // Announce Tie game if all tiles are filled without Winner (tile values at 111_111_111)
         if (pos.overall() == 0b111_111_111) {
             return GameStatus.Tie
@@ -91,21 +93,23 @@ function App() {
         }
 
         // Make changes to player's positions on the board
-        playerPos[currPlayer] |= (0b000_000_000 | 2 ** index);
+        
+        // !CHANGES: No longer mutate the immutable, stateful `playerPos` anymore. 
+        // !Instead assigns a new variable with new values, and pass them in subsequent functions
+
+        let newPlayerPos : PlayerPos = {
+            ...playerPos,
+            [currPlayer]: playerPos[currPlayer] | (0b000_000_000 | 2 ** index),
+        }
 
         // Make changes to & Update "gameState" state
-        setGameState(posAsString(playerPos));
+        setGameState(posAsString(newPlayerPos));
         
         // Update player's positions on the board
-        setPlayerPos(
-            {
-                [currPlayer]: playerPos[currPlayer],
-                ...playerPos
-            }
-        );
+        setPlayerPos(newPlayerPos);
 
         // Return game's status (Win, On-going, Tie) 
-        return checkWinner(playerPos, currPlayer)
+        return checkWinner(newPlayerPos, currPlayer)
     }
 
     function makeMove(index: number): void {
@@ -125,11 +129,21 @@ function App() {
         status != GameStatus.Win ? switchPlayer() : 0;
     }
 
+    // Refresh ALL game states into default state for next render
+    function restartGame(): void {
+        setGameStatus(GameStatus.On);
+        setGameState(Array(9).fill(""));
+        setWinPos(undefined);
+        setPlayerPos(DEFAULT_PLAYER_POS);
+        setCurrPlayer("X");
+    }
+
     return (
         <>
             <div className="o-titleGrid">
                 <h1>Tic-Tac-Toe game is <i>{gameStatus == GameStatus.On ? "on-going" : gameStatus == GameStatus.Tie ? "tied" : `finished! Winner is ${currPlayer}`}</i></h1>
                 <p data-player={currPlayer}>Current Player: <b>{currPlayer}</b></p>
+                <button id="restart-btn" onClick={restartGame}>Restart Game</button>
             </div>
             <div className='o-gameGrid'>
                 {

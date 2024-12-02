@@ -5,11 +5,11 @@
 
 div.o-titleGrid {
     text-align: center;
+    margin-bottom: 1rem;
     & p {
         font-size: 1.5rem;
         color: var(--tile-color);
     }
-
 }
 
 div.o-gameGrid {
@@ -40,6 +40,11 @@ button {
     &.u-highlight {
         background: rgb(from var(--tile-color) r g b / 0.2);
         font-weight: bold;
+    }
+
+    &#restart-btn {
+        margin: auto;
+        font-size: 2rem;
     }
 }
 

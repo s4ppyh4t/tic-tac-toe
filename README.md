@@ -4,6 +4,22 @@
 Submission by Tung Nguyen
 
 ---
+#### <span style="color: green">Updates on 02/12</span>
+
+<span style="color: green">Implemented `Restart Game` button to refresh states of the game. This required fixing the error #1 mentioned below!</span>
+
+**There are a few errors I've found living in my code:**
+
+1. ~~I have mutated variable `playerPos`, which was in state. While I did acknowledge the problem of state mutation and sufficiently called `setPlayerPos` accordingly, it violated the snapshot rule, and React may have not reconcile properly, had I not passed in a different playerPos object (it may have not acknowledge a state change due to shallow comparison).~~
+
+<span style="color: green">**Fixed**. Ironically, this is the reason why my code runs into an error while attempting to implement the `Restart game` button. Just as React said, *unexpected behaviours* will come if I mutate the *supposedly-immutatable-stateful* variable `playerPos`.</span>
+
+2. My code design fragments `set<State>` method with too much freedom (and probably too many of them), which means that just with one function not behaving properly and no error boundaries, the game will fall into an inconsistent state (while running still), since player and game states are separate.
+
+3. May be a bit too big? Could be chomped down into smaller components.
+
+4. Hard to scale! Methods that use either binary representation to reflect game state or an array of "winning conditions" will not scale well if the complexity of the board increases (5x5, 10x10, the more tiles it has the worse it gets.)
+--- 
 
 The logic of the game is simple. There are three set of states that the game maintains:
 
